@@ -24,17 +24,7 @@ namespace Akka.Cluster.Discovery.Etcd
         {
         }
 
-        protected override Task<bool> LockAsync(string systemName)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override Task UnlockAsync(string systemName)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override Task<IEnumerable<Address>> GetAliveNodesAsync(string systemName)
+        protected override Task<IEnumerable<Address>> GetAliveNodesAsync()
         {
             throw new System.NotImplementedException();
         }
@@ -45,6 +35,11 @@ namespace Akka.Cluster.Discovery.Etcd
         }
 
         protected override Task MarkAsAliveAsync(MemberEntry entry)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        protected override void SendJoinSignal()
         {
             throw new System.NotImplementedException();
         }

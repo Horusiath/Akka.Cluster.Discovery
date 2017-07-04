@@ -4,15 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E557784A-8278-4669-8F67-54D39F6BDD74}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{E9BC180F-7F79-41B9-A3A5-9EFFE67AE0A7}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Akka.Cluster.Discovery</RootNamespace>
-    <AssemblyName>Akka.Cluster.Discovery</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <RootNamespace>SampleApp</RootNamespace>
+    <AssemblyName>SampleApp</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +24,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -42,24 +45,24 @@
       <HintPath>..\packages\Akka.Remote.1.2.2\lib\net45\Akka.Remote.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DotNetty.Buffers, Version=0.4.5.0, Culture=neutral, PublicKeyToken=bc13ca065fa06c29, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotNetty.Buffers.0.4.5\lib\net45\DotNetty.Buffers.dll</HintPath>
+    <Reference Include="DotNetty.Buffers, Version=0.0.0.0, Culture=neutral, PublicKeyToken=bc13ca065fa06c29, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetty.Buffers.0.4.3\lib\net45\DotNetty.Buffers.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DotNetty.Codecs, Version=0.4.5.0, Culture=neutral, PublicKeyToken=bc13ca065fa06c29, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotNetty.Codecs.0.4.5\lib\net45\DotNetty.Codecs.dll</HintPath>
+    <Reference Include="DotNetty.Codecs, Version=0.0.0.0, Culture=neutral, PublicKeyToken=bc13ca065fa06c29, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetty.Codecs.0.4.3\lib\net45\DotNetty.Codecs.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DotNetty.Common, Version=0.4.5.0, Culture=neutral, PublicKeyToken=bc13ca065fa06c29, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotNetty.Common.0.4.5\lib\net45\DotNetty.Common.dll</HintPath>
+    <Reference Include="DotNetty.Common, Version=0.0.0.0, Culture=neutral, PublicKeyToken=bc13ca065fa06c29, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetty.Common.0.4.3\lib\net45\DotNetty.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DotNetty.Handlers, Version=0.4.5.0, Culture=neutral, PublicKeyToken=bc13ca065fa06c29, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotNetty.Handlers.0.4.5\lib\net45\DotNetty.Handlers.dll</HintPath>
+    <Reference Include="DotNetty.Handlers, Version=0.0.0.0, Culture=neutral, PublicKeyToken=bc13ca065fa06c29, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetty.Handlers.0.4.3\lib\net45\DotNetty.Handlers.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DotNetty.Transport, Version=0.4.5.0, Culture=neutral, PublicKeyToken=bc13ca065fa06c29, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotNetty.Transport.0.4.5\lib\net45\DotNetty.Transport.dll</HintPath>
+    <Reference Include="DotNetty.Transport, Version=0.0.0.0, Culture=neutral, PublicKeyToken=bc13ca065fa06c29, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetty.Transport.0.4.3\lib\net45\DotNetty.Transport.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Google.ProtocolBuffers, Version=2.4.1.555, Culture=neutral, PublicKeyToken=55f7125234beb589, processorArchitecture=MSIL">
@@ -68,10 +71,6 @@
     </Reference>
     <Reference Include="Google.ProtocolBuffers.Serialization, Version=2.4.1.555, Culture=neutral, PublicKeyToken=55f7125234beb589, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.ProtocolBuffers.2.4.1.555\lib\net40\Google.ProtocolBuffers.Serialization.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Helios, Version=2.1.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Helios.2.1.2\lib\net45\Helios.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=1.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
@@ -111,20 +110,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClusterDiscovery.cs" />
-    <Compile Include="ClusterDiscoverySettings.cs" />
-    <Compile Include="DiscoveryService.cs" />
-    <Compile Include="LockingDiscoveryService.cs" />
-    <Compile Include="LocklessDiscoveryService.cs" />
-    <Compile Include="MemberEntry.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="App.config" />
     <None Include="packages.config" />
-    <EmbeddedResource Include="reference.conf" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Akka.Cluster.Discovery.Consul\Akka.Cluster.Discovery.Consul.csproj">
+      <Project>{b4514de3-fc11-4f7f-8a51-8237ef21fb65}</Project>
+      <Name>Akka.Cluster.Discovery.Consul</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Akka.Cluster.Discovery\Akka.Cluster.Discovery.csproj">
+      <Project>{e557784a-8278-4669-8f67-54d39f6bdd74}</Project>
+      <Name>Akka.Cluster.Discovery</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

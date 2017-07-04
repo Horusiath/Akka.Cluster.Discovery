@@ -29,6 +29,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Akka.Cluster.Discovery.Serv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Akka.Cluster.Discovery.Zookeeper.Tests", "Akka.Cluster.Discovery.Zookeeper.Tests\Akka.Cluster.Discovery.Zookeeper.Tests.csproj", "{AD9C1E8F-6889-4C62-907C-C57E7CC15898}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{13582145-1B13-4463-B3D8-A2E5F3901EA2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleApp", "SampleApp\SampleApp.csproj", "{E9BC180F-7F79-41B9-A3A5-9EFFE67AE0A7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +83,10 @@ Global
 		{AD9C1E8F-6889-4C62-907C-C57E7CC15898}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD9C1E8F-6889-4C62-907C-C57E7CC15898}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD9C1E8F-6889-4C62-907C-C57E7CC15898}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9BC180F-7F79-41B9-A3A5-9EFFE67AE0A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9BC180F-7F79-41B9-A3A5-9EFFE67AE0A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9BC180F-7F79-41B9-A3A5-9EFFE67AE0A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9BC180F-7F79-41B9-A3A5-9EFFE67AE0A7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -95,5 +103,6 @@ Global
 		{818A9E70-0B3A-4104-A4D0-F9E06DD9F4D4} = {E6467853-363A-4A5E-8FD5-E56A95F5308D}
 		{AE08A78C-A89C-47BC-951E-2E2D61BB143E} = {E6467853-363A-4A5E-8FD5-E56A95F5308D}
 		{AD9C1E8F-6889-4C62-907C-C57E7CC15898} = {E6467853-363A-4A5E-8FD5-E56A95F5308D}
+		{E9BC180F-7F79-41B9-A3A5-9EFFE67AE0A7} = {13582145-1B13-4463-B3D8-A2E5F3901EA2}
 	EndGlobalSection
 EndGlobal

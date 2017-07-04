@@ -16,15 +16,30 @@ namespace Akka.Cluster.Discovery
     {
         #region messages
 
+        /// <summary>
+        /// Common interface for are signals defined for classes extending 
+        /// <see cref="DiscoveryService"/>.
+        /// </summary>
         public interface IMessage { }
-        public sealed class Lock : IMessage
+
+        /// <summary>
+        /// Signal send to discovery service to trigger to cluster 
+        /// join/initialization procedure.
+        /// </summary>
+        public sealed class Join : IMessage
         {
-            public static readonly Lock Instance = new Lock();
-            private Lock() { }
+            public static readonly Join Instance = new Join();
+            private Join() { }
         }
-        public sealed class IAmAlive : IMessage
+
+        /// <summary>
+        /// Message send periodically (in intervals defined by 
+        /// <see cref="ClusterDiscoverySettings.AliveInterval"/>) to trigger TTL
+        /// refresh.
+        /// </summary>
+        public sealed class Alive : IMessage
         {
-            public IAmAlive(Address selfAddress)
+            public Alive(Address selfAddress)
             {
                 SelfAddress = selfAddress;
             }
@@ -36,91 +51,83 @@ namespace Akka.Cluster.Discovery
         #endregion
 
         #region abstract messages
-
-        protected abstract Task<bool> LockAsync(string systemName);
-
-        protected abstract Task UnlockAsync(string systemName);
-
-        protected abstract Task<IEnumerable<Address>> GetAliveNodesAsync(string systemName);
+        
+        protected abstract Task<IEnumerable<Address>> GetAliveNodesAsync();
 
         protected abstract Task RegisterNodeAsync(MemberEntry entry);
 
         protected abstract Task MarkAsAliveAsync(MemberEntry entry);
 
-        #endregion
-        
-        private readonly Cluster cluster;
-        private readonly ClusterDiscoverySettings settings;
-        private readonly ILoggingAdapter log;
-        private readonly MemberEntry entry;
+        protected abstract void SendJoinSignal();
 
+        #endregion
+
+        protected readonly Cluster Cluster;
+        protected readonly MemberEntry Entry;
+        protected readonly ILoggingAdapter Log;
+
+        private readonly ClusterDiscoverySettings settings;
         private ICancelable refreshTask;
 
         protected DiscoveryService(ClusterDiscoverySettings settings)
         {
-            this.cluster = Cluster.Get(Context.System);
-            this.log = Context.GetLogger();
+            this.Cluster = Cluster.Get(Context.System);
+            this.Log = Context.GetLogger();
             this.settings = settings;
-            this.entry = new MemberEntry(Context.System.Name, cluster.SelfAddress, cluster.SelfRoles);
+            this.Entry = new MemberEntry(Context.System.Name, Cluster.SelfAddress, Cluster.SelfRoles);
 
-            Initializing();
-        }
-
-        private void Initializing()
-        {
-            var retries = 0;
-            ReceiveAsync<Lock>(async _ =>
+            var retries = settings.JoinRetries;
+            ReceiveAsync<Join>(async _ =>
             {
-                var system = Context.System;
-                var locked = await LockAsync(system.Name);
-                if (locked)
+                retries--;
+                try
                 {
-                    try
+                    var joined = await TryJoinAsync();
+                    if (!joined)
+                        SendJoinSignal();
+                }
+                catch (Exception cause)
+                {
+                    if (retries > 0)
                     {
-                        var nodes = (await GetAliveNodesAsync(system.Name)).ToArray();
-                        if (nodes.Length == 0)
-                            cluster.JoinSeedNodes(new[] { entry.Address });
-                        else
-                            cluster.JoinSeedNodes(nodes);
-
-                        await RegisterNodeAsync(entry);
-                        await MarkAsAliveAsync(entry);
-                        
-                        refreshTask = Context.System.Scheduler
-                            .ScheduleTellRepeatedlyCancelable(settings.AliveInterval, settings.AliveInterval, Self, new IAmAlive(entry.Address), ActorRefs.NoSender);
-
-                        Become(Alive);
+                        SendJoinSignal();
                     }
-                    catch (Exception cause)
+                    else
                     {
-                        log.Error(cause, "Failed to obtain a distributed lock for actor system [{0}] after {1} retries. Closing.", Context.System.Name, retries);
+                        Log.Error(cause, "Failed to obtain a distributed lock for actor system [{0}] after {1} retries. Closing.", Context.System.Name, retries);
                         Context.Stop(Self);
                     }
-                    finally
-                    {
-                        await UnlockAsync(system.Name);
-                    }
-                }
-                else
-                {
-                    retries++;
-                    log.Warning("Failed to obtain a distributed lock for actor system [{0}]. Remaining retries: {1}. Retry in [{2}]", Context.System.Name, retries, settings.LockRetryInterval);
-                    Context.System.Scheduler.ScheduleTellOnce(settings.LockRetryInterval, Self, Lock.Instance, ActorRefs.NoSender);
                 }
             });
         }
 
-        private void Alive()
+        protected virtual async Task<bool> TryJoinAsync()
         {
-            ReceiveAsync<IAmAlive>(async alive =>
-            {
-                await MarkAsAliveAsync(entry);
-            });
+            var nodes = (await GetAliveNodesAsync()).ToArray();
+            if (nodes.Length == 0)
+                Cluster.JoinSeedNodes(new[] {Entry.Address});
+            else
+                Cluster.JoinSeedNodes(nodes);
+
+            await RegisterNodeAsync(Entry);
+            await MarkAsAliveAsync(Entry);
+
+            refreshTask = Context.System.Scheduler
+                .ScheduleTellRepeatedlyCancelable(settings.AliveInterval, settings.AliveInterval, Self,
+                    new Alive(Entry.Address), ActorRefs.NoSender);
+
+            Become(Ready);
+            return true;
+        }
+
+        private void Ready()
+        {
+            ReceiveAsync<Alive>(alive => this.MarkAsAliveAsync(Entry));
         }
 
         protected override void PreStart()
         {
-            Self.Tell(Lock.Instance);
+            SendJoinSignal();
             base.PreStart();
         }
 

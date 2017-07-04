@@ -17,7 +17,7 @@ using Consul;
 
 namespace Akka.Cluster.Discovery.Consul
 {
-    public class ConsulDiscoveryService : DiscoveryService
+    public class ConsulDiscoveryService : LockingDiscoveryService
     {
         private readonly IConsulClient consul;
         private readonly ConsulSettings settings;
@@ -29,7 +29,7 @@ namespace Akka.Cluster.Discovery.Consul
         }
 
         public ConsulDiscoveryService(ConsulSettings settings) 
-            : this(new ConsulClient(/*TODO: configure*/), settings)
+            : this(new ConsulClient(config => ConfigureClient(config, settings)), settings)
         {
         }
 
@@ -39,20 +39,20 @@ namespace Akka.Cluster.Discovery.Consul
             this.settings = settings;
         }
 
-        protected override async Task<bool> LockAsync(string systemName)
+        protected override async Task<bool> LockAsync(string key)
         {
-            distributedLock = await consul.AcquireLock(systemName);
+            distributedLock = await consul.AcquireLock(key);
             return distributedLock.IsHeld;
         }
 
-        protected override async Task UnlockAsync(string systemName)
+        protected override async Task UnlockAsync(string key)
         {
             await distributedLock.Release();
         }
 
-        protected override async Task<IEnumerable<Address>> GetAliveNodesAsync(string systemName)
+        protected override async Task<IEnumerable<Address>> GetAliveNodesAsync()
         {
-            var services = await consul.Health.Service(systemName);
+            var services = await consul.Health.Service(Context.System.Name);
 
             var result =
                 from x in services.Response
@@ -66,7 +66,8 @@ namespace Akka.Cluster.Discovery.Consul
         {
             if (!entry.Address.Port.HasValue) throw new ArgumentException($"Cluster address {entry.Address} doesn't have a port specified");
 
-            var id = entry.Address.ToString();
+            var addr = entry.Address;
+            var id = $"{addr.System}@{addr.Host}:{addr.Port}";
             var registration = new AgentServiceRegistration
             {
                 ID = id,
@@ -78,7 +79,7 @@ namespace Akka.Cluster.Discovery.Consul
                 {
                     TTL = settings.AliveInterval,
                     // deregister after 3 activity turns failed
-                    DeregisterCriticalServiceAfter = new TimeSpan(settings.AliveInterval.Ticks * 3),
+                    DeregisterCriticalServiceAfter = settings.AliveTimeout,
                 }
             };
             await consul.Agent.ServiceDeregister(registration.ID);
@@ -87,13 +88,22 @@ namespace Akka.Cluster.Discovery.Consul
 
         protected override async Task MarkAsAliveAsync(MemberEntry entry)
         {
-            await consul.Agent.PassTTL(entry.Address.ToString(), string.Empty);
+            var addr = entry.Address;
+            await consul.Agent.PassTTL($"service:{addr.System}@{addr.Host}:{addr.Port}", string.Empty);
         }
 
         protected override void PostStop()
         {
             base.PostStop();
             consul.Dispose();
+        }
+
+        private static void ConfigureClient(ConsulClientConfiguration clientConfig, ConsulSettings settings)
+        {
+            clientConfig.Address = settings.ListenerUrl;
+            clientConfig.Datacenter = settings.Datacenter;
+            clientConfig.Token = settings.Token;
+            clientConfig.WaitTime = settings.WaitTime;
         }
     }
 }

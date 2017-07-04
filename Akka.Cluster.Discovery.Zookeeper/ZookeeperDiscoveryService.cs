@@ -25,37 +25,24 @@ namespace Akka.Cluster.Discovery.Zookeeper
             this.zookeeper = zookeeper;
         }
 
-        protected override async Task<bool> LockAsync(string systemName)
-        {
-            transaction = zookeeper.transaction();
-            return true;
-        }
-
-        protected override async Task UnlockAsync(string systemName)
-        {
-            await transaction.commitAsync();
-            transaction = null;
-        }
-
-        protected override async Task<IEnumerable<Address>> GetAliveNodesAsync(string systemName)
+        protected override Task<IEnumerable<Address>> GetAliveNodesAsync()
         {
             throw new NotImplementedException();
         }
 
-        protected override async Task RegisterNodeAsync(MemberEntry entry)
+        protected override Task RegisterNodeAsync(MemberEntry entry)
         {
             throw new NotImplementedException();
         }
 
-        protected override async Task MarkAsAliveAsync(MemberEntry entry)
+        protected override Task MarkAsAliveAsync(MemberEntry entry)
         {
             throw new NotImplementedException();
         }
 
-        protected override void PostStop()
+        protected override void SendJoinSignal()
         {
-            base.PostStop();
-            
+            throw new NotImplementedException();
         }
     }
 }
