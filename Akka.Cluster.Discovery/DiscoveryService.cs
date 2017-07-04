@@ -10,7 +10,22 @@ namespace Akka.Cluster.Discovery
 {
     /// <summary>
     /// An abstract actor, that provides basic protocol for 3rd party  cluster 
-    /// discovery mechanisms. 
+    /// discovery mechanisms. In practice all of its implementations are deriving
+    /// from either:
+    /// <list type="bullet">
+    ///     <item>
+    ///         <term><see cref="LockingDiscoveryService"/></term>
+    ///         <description>
+    ///             Used by services that allows for distributed lock acquisition for coordination.
+    ///         </description>
+    ///     </item>
+    ///     <item>
+    ///         <term><see cref="LocklessDiscoveryService"/></term>
+    ///         <description>
+    ///             For services using randomized turn-based cluster seed registery.
+    ///         </description>
+    ///     </item>
+    /// </list>
     /// </summary>
     public abstract class DiscoveryService : ReceiveActor
     {
@@ -52,18 +67,50 @@ namespace Akka.Cluster.Discovery
 
         #region abstract messages
         
+        /// <summary>
+        /// Asynchronously tries to retrieve list of other cluster nodes currently
+        /// known as alive. If there are no alive nodes or cluster was not established
+        /// yet, it returns an empty collections.
+        /// </summary>
+        /// <returns></returns>
         protected abstract Task<IEnumerable<Address>> GetAliveNodesAsync();
 
-        protected abstract Task RegisterNodeAsync(MemberEntry entry);
+        /// <summary>
+        /// Registers provided <paramref name="node"/> inside of current service.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        protected abstract Task RegisterNodeAsync(MemberEntry node);
 
-        protected abstract Task MarkAsAliveAsync(MemberEntry entry);
+        /// <summary>
+        /// Used for health checks. Triggers healt check heartbeat, marking current
+        /// <paramref name="node"/> as alive.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        protected abstract Task MarkAsAliveAsync(MemberEntry node);
 
+        /// <summary>
+        /// Triggers <see cref="Join"/> request signal to be send. It may be immediate
+        /// or set some time in the future.
+        /// </summary>
         protected abstract void SendJoinSignal();
 
         #endregion
 
+        /// <summary>
+        /// Current cluster extension.
+        /// </summary>
         protected readonly Cluster Cluster;
+
+        /// <summary>
+        /// Member entry representing data about current cluster node.
+        /// </summary>
         protected readonly MemberEntry Entry;
+
+        /// <summary>
+        /// Akka.NET logger.
+        /// </summary>
         protected readonly ILoggingAdapter Log;
 
         private readonly ClusterDiscoverySettings settings;

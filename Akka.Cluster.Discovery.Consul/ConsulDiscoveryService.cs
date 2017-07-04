@@ -62,19 +62,19 @@ namespace Akka.Cluster.Discovery.Consul
             return result;
         }
 
-        protected override async Task RegisterNodeAsync(MemberEntry entry)
+        protected override async Task RegisterNodeAsync(MemberEntry node)
         {
-            if (!entry.Address.Port.HasValue) throw new ArgumentException($"Cluster address {entry.Address} doesn't have a port specified");
+            if (!node.Address.Port.HasValue) throw new ArgumentException($"Cluster address {node.Address} doesn't have a port specified");
 
-            var addr = entry.Address;
+            var addr = node.Address;
             var id = $"{addr.System}@{addr.Host}:{addr.Port}";
             var registration = new AgentServiceRegistration
             {
                 ID = id,
-                Name = entry.ClusterName,
-                Tags = entry.Roles.ToArray(),
-                Address = entry.Address.Host,
-                Port = entry.Address.Port.Value,
+                Name = node.ClusterName,
+                Tags = node.Roles.ToArray(),
+                Address = node.Address.Host,
+                Port = node.Address.Port.Value,
                 Check = new AgentServiceCheck
                 {
                     TTL = settings.AliveInterval,
@@ -86,9 +86,9 @@ namespace Akka.Cluster.Discovery.Consul
             await consul.Agent.ServiceRegister(registration);
         }
 
-        protected override async Task MarkAsAliveAsync(MemberEntry entry)
+        protected override async Task MarkAsAliveAsync(MemberEntry node)
         {
-            var addr = entry.Address;
+            var addr = node.Address;
             await consul.Agent.PassTTL($"service:{addr.System}@{addr.Host}:{addr.Port}", string.Empty);
         }
 

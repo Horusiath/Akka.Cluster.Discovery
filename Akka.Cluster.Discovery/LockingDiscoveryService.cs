@@ -34,7 +34,19 @@ namespace Akka.Cluster.Discovery
 
         #region abstract members
 
+        /// <summary>
+        /// Tries to acquire a lock. If failed it will retry a several times in intervals 
+        /// specified by <see cref="LockingClusterDiscoverySettings.LockRetryInterval"/>.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         protected abstract Task<bool> LockAsync(string key);
+
+        /// <summary>
+        /// Releases previously acquired lock.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         protected abstract Task UnlockAsync(string key);
 
         #endregion

@@ -34,8 +34,20 @@ namespace Akka.Cluster.Discovery
         public static ClusterDiscovery Run(ActorSystem system) => system
             .WithExtension<ClusterDiscovery, ClusterDiscoveryProvider>();
         
+        /// <summary>
+        /// An actor inheriting from <see cref="Discovery.DiscoveryService"/> that is able to work
+        /// with external service.
+        /// </summary>
         public IActorRef DiscoveryService { get; }
 
+        /// <summary>
+        /// Creates new instance of a <see cref="ClusterDiscovery"/> extension. Extension config
+        /// is supplied from `akka.cluster.discovery` HOCON path. 
+        /// 
+        /// Invoking this constructor triggers provided <paramref name="system"/> to initialize 
+        /// cluster joining procedure.
+        /// </summary>
+        /// <param name="system"></param>
         public ClusterDiscovery(ExtendedActorSystem system)
         {
             system.Settings.InjectTopLevelFallback(DefaultConfig);

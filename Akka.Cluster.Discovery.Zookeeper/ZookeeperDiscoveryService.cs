@@ -30,12 +30,12 @@ namespace Akka.Cluster.Discovery.Zookeeper
             throw new NotImplementedException();
         }
 
-        protected override Task RegisterNodeAsync(MemberEntry entry)
+        protected override Task RegisterNodeAsync(MemberEntry node)
         {
             throw new NotImplementedException();
         }
 
-        protected override Task MarkAsAliveAsync(MemberEntry entry)
+        protected override Task MarkAsAliveAsync(MemberEntry node)
         {
             throw new NotImplementedException();
         }
