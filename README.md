@@ -1,6 +1,6 @@
 ## Akka.Cluster.Discovery
 
-A set of libraries, that allows to manage a set of Akka.NET cluster seed nodes using a provided 3rd party service.
+Common libraries, that allows to manage a set of Akka.NET cluster seed nodes using a provided 3rd party service.
 
 Current status:
 
@@ -26,7 +26,7 @@ var config = ConfigurationFactory.Parse(@"
 		cluster.discovery {
 			provider = akka.cluster.discovery.consul
 			consul {
-				listener-url = "http://127.0.0.1:8500"
+				listener-url = ""http://127.0.0.1:8500""
 			}
 		}
 	}
