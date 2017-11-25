@@ -9,7 +9,7 @@ namespace Akka.Cluster.Discovery
         /// <summary>
         /// Default value of a <see cref="AliveInterval"/>: 5 seconds.
         /// </summary>
-        public static readonly TimeSpan DefaultAliveInterval = TimeSpan.FromSeconds(5);
+        public static readonly TimeSpan DefaultAliveInterval = TimeSpan.FromSeconds(10);
 
         /// <summary>
         /// Default value of <see cref="AliveTimeout"/>: 1 minute.

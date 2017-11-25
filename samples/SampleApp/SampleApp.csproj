@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Akka.Cluster" Version="1.3.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Akka.Cluster.Discovery.Consul\Akka.Cluster.Discovery.Consul.csproj" />
+    <ProjectReference Include="..\..\src\Akka.Cluster.Discovery\Akka.Cluster.Discovery.csproj" />
+  </ItemGroup>
+
+</Project>

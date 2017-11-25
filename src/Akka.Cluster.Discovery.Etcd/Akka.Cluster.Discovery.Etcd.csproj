@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="netcd" Version="0.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Akka.Cluster.Discovery\Akka.Cluster.Discovery.csproj" />
   </ItemGroup>
 

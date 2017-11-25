@@ -23,16 +23,18 @@ namespace Akka.Cluster.Discovery.Consul
         private readonly ConsulSettings settings;
         private IDistributedLock distributedLock;
 
-        public ConsulDiscoveryService(Config config) : this(new ConsulSettings(config)) 
+        private readonly string protocol;
+
+        public ConsulDiscoveryService(Config config) : this(new ConsulSettings(config))
         {
-            
+            protocol = ((ExtendedActorSystem) Context.System).Provider.DefaultAddress.Protocol;
         }
 
-        public ConsulDiscoveryService(ConsulSettings settings) 
+        public ConsulDiscoveryService(ConsulSettings settings)
             : this(new ConsulClient(config => ConfigureClient(config, settings)), settings)
         {
         }
-        
+
         public ConsulDiscoveryService(IConsulClient consulClient, ConsulSettings settings) : base(settings)
         {
             consul = consulClient;
@@ -57,7 +59,7 @@ namespace Akka.Cluster.Discovery.Consul
             var result =
                 from x in services.Response
                 where Equals(x.Checks[1].Status, HealthStatus.Passing)
-                select Address.Parse(x.Service.ID);
+                select Address.Parse(protocol + "://" + x.Service.ID);
 
             return result;
         }
@@ -66,8 +68,8 @@ namespace Akka.Cluster.Discovery.Consul
         {
             if (!node.Address.Port.HasValue) throw new ArgumentException($"Cluster address {node.Address} doesn't have a port specified");
 
-            var addr = node.Address;
-            var id = $"{addr.System}@{addr.Host}:{addr.Port}";
+            var address = node.Address;
+            var id = ServiceId(address);
             var registration = new AgentServiceRegistration
             {
                 ID = id,
@@ -82,14 +84,22 @@ namespace Akka.Cluster.Discovery.Consul
                     DeregisterCriticalServiceAfter = settings.AliveTimeout,
                 }
             };
-            await consul.Agent.ServiceDeregister(registration.ID);
+
+            // first, try to deregister service, if it has been registered previously
             await consul.Agent.ServiceRegister(registration);
+
+            Log.Info("Registered node [{0}] as consul service [{1}] (TTL: {2})", node, id, settings.AliveInterval);
         }
 
         protected override async Task MarkAsAliveAsync(MemberEntry node)
         {
             var addr = node.Address;
-            await consul.Agent.PassTTL($"service:{addr.System}@{addr.Host}:{addr.Port}", string.Empty);
+            await consul.Agent.PassTTL("service:" + ServiceId(addr), string.Empty);
+        }
+
+        private static string ServiceId(Address addr)
+        {
+            return $"{addr.System}@{addr.Host}:{addr.Port}/";
         }
 
         protected override void PostStop()
