@@ -68,6 +68,7 @@ namespace SampleApp
 			            provider = akka.cluster.discovery.consul
 			            consul {
 				            listener-url = ""http://127.0.0.1:8500""
+		                    refresh-interval = 1m
 			            }
 		            }
 	            }");

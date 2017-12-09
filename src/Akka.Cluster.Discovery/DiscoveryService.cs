@@ -179,6 +179,7 @@ namespace Akka.Cluster.Discovery
 
             if (settings.RefreshInterval != TimeSpan.Zero)
             {
+                Log.Debug("Setting up reconciliation task with interval {0}", settings.RefreshInterval);
                 refreshTask = Context.System.Scheduler.ScheduleTellRepeatedlyCancelable(settings.RefreshInterval, settings.RefreshInterval, Self,
                     Reconcile.Instance, ActorRefs.NoSender);
             }
@@ -208,7 +209,7 @@ namespace Akka.Cluster.Discovery
             }
 
             var current = Cluster.State.Members.Union(Cluster.State.Unreachable).Select(m => m.Address).ToImmutableHashSet();
-
+            
             if (!provided.SetEquals(current))
             {
                 if (Log.IsInfoEnabled)
