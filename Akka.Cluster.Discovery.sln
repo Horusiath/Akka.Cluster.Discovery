@@ -12,23 +12,20 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E236FE68-4A42-4FAF-8779-6F8C2FBD68EC}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		build.cmd = build.cmd
+		build.fsx = build.fsx
+		build.ps1 = build.ps1
+		build.sh = build.sh
 		LICENSE = LICENSE
 		README.md = README.md
+		RELEASE_NOTES.md = RELEASE_NOTES.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Akka.Cluster.Discovery.Consul", "src\Akka.Cluster.Discovery.Consul\Akka.Cluster.Discovery.Consul.csproj", "{7D6FC91C-EDD3-4EFF-A11E-8A0B947618C6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Akka.Cluster.Discovery", "src\Akka.Cluster.Discovery\Akka.Cluster.Discovery.csproj", "{1797672F-B131-417D-A795-C610412F5F7E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Akka.Cluster.Discovery.Etcd", "src\Akka.Cluster.Discovery.Etcd\Akka.Cluster.Discovery.Etcd.csproj", "{216E3EE3-DEE6-4230-94F0-3917D26FCEC6}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Akka.Cluster.Discovery.Tests", "test\Akka.Cluster.Discovery.Tests\Akka.Cluster.Discovery.Tests.csproj", "{5FDB8840-34CB-4A6F-B899-F0CD80109508}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Akka.Cluster.Dicovery.Consul.Tests", "test\Akka.Cluster.Dicovery.Consul.Tests\Akka.Cluster.Dicovery.Consul.Tests.csproj", "{9B8C2955-E845-4EC3-A5EA-F811AF6DD9BB}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Akka.Cluster.Discovery.Etcd.Tests", "test\Akka.Cluster.Discovery.Etcd.Tests\Akka.Cluster.Discovery.Etcd.Tests.csproj", "{5001C45A-B639-4EDA-9A17-AF8B54CD892E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleApp", "samples\SampleApp\SampleApp.csproj", "{FCEB357F-FDBA-44CC-93DA-22B8CD338FAA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleApp", "samples\SampleApp\SampleApp.csproj", "{FCEB357F-FDBA-44CC-93DA-22B8CD338FAA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,22 +41,6 @@ Global
 		{1797672F-B131-417D-A795-C610412F5F7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1797672F-B131-417D-A795-C610412F5F7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1797672F-B131-417D-A795-C610412F5F7E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{216E3EE3-DEE6-4230-94F0-3917D26FCEC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{216E3EE3-DEE6-4230-94F0-3917D26FCEC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{216E3EE3-DEE6-4230-94F0-3917D26FCEC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{216E3EE3-DEE6-4230-94F0-3917D26FCEC6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5FDB8840-34CB-4A6F-B899-F0CD80109508}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5FDB8840-34CB-4A6F-B899-F0CD80109508}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5FDB8840-34CB-4A6F-B899-F0CD80109508}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5FDB8840-34CB-4A6F-B899-F0CD80109508}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9B8C2955-E845-4EC3-A5EA-F811AF6DD9BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9B8C2955-E845-4EC3-A5EA-F811AF6DD9BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9B8C2955-E845-4EC3-A5EA-F811AF6DD9BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9B8C2955-E845-4EC3-A5EA-F811AF6DD9BB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5001C45A-B639-4EDA-9A17-AF8B54CD892E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5001C45A-B639-4EDA-9A17-AF8B54CD892E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5001C45A-B639-4EDA-9A17-AF8B54CD892E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5001C45A-B639-4EDA-9A17-AF8B54CD892E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FCEB357F-FDBA-44CC-93DA-22B8CD338FAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FCEB357F-FDBA-44CC-93DA-22B8CD338FAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FCEB357F-FDBA-44CC-93DA-22B8CD338FAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -71,10 +52,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{7D6FC91C-EDD3-4EFF-A11E-8A0B947618C6} = {47DDFCDE-4E37-4578-AE1C-A489DC5D9D65}
 		{1797672F-B131-417D-A795-C610412F5F7E} = {47DDFCDE-4E37-4578-AE1C-A489DC5D9D65}
-		{216E3EE3-DEE6-4230-94F0-3917D26FCEC6} = {47DDFCDE-4E37-4578-AE1C-A489DC5D9D65}
-		{5FDB8840-34CB-4A6F-B899-F0CD80109508} = {E6467853-363A-4A5E-8FD5-E56A95F5308D}
-		{9B8C2955-E845-4EC3-A5EA-F811AF6DD9BB} = {E6467853-363A-4A5E-8FD5-E56A95F5308D}
-		{5001C45A-B639-4EDA-9A17-AF8B54CD892E} = {E6467853-363A-4A5E-8FD5-E56A95F5308D}
 		{FCEB357F-FDBA-44CC-93DA-22B8CD338FAA} = {13582145-1B13-4463-B3D8-A2E5F3901EA2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

@@ -32,7 +32,7 @@ namespace Akka.Cluster.Discovery
         /// </summary>
         /// <param name="system"></param>
         /// <returns></returns>
-        public static ClusterDiscovery Run(ActorSystem system) => system
+        public static ClusterDiscovery Join(ActorSystem system) => system
             .WithExtension<ClusterDiscovery, ClusterDiscoveryProvider>();
         
         /// <summary>

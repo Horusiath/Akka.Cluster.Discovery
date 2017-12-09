@@ -36,7 +36,7 @@ using (var system = ActorSystem.Create())
 {
 	// this line triggers discovery service initialization
 	// and will join or initialize current actor system to the cluster
-	ClusterDiscovery.Run(system);
+	ClusterDiscovery.Join(system);
 
 	Console.ReadLine();
 }
@@ -78,7 +78,7 @@ akka.cluster.discovery {
 
 		# In case if lock-based discovery service won't be able to acquire the lock,
         # it will retry to do it again after some time, max up to the number of times 
-		# described by `join-retries` setting value.
+        # described by `join-retries` setting value.
 		lock-retry-interval = 250ms
 
 		# An URL address on with Consul listener service can be found.

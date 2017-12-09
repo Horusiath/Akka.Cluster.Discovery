@@ -75,7 +75,7 @@ namespace SampleApp
 
             using (var system = ActorSystem.Create("sample", config))
             {
-                ClusterDiscovery.Run(system);
+                ClusterDiscovery.Join(system);
 
                 system.ActorOf(Props.Create<SampleActor>());
                 Console.ReadLine();
