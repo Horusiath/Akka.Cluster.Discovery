@@ -1,16 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
+    <AssemblyTitle>Akka.Cluster.Discovery.Consul</AssemblyTitle>
+    <Description>Long running Akka.NET scheduler backed by Akka.Persistence </Description>
+    <TargetFrameworks>netstandard1.6</TargetFrameworks>
+    <PackageTags>akka.net;cluster;service-discovery;consul</PackageTags>
+    <Copyright>Copyright © 2017 Akka.NET Team</Copyright>
+    <Authors>Bartosz Sypytkowski</Authors>
+    <VersionPrefix>0.0.1</VersionPrefix>
+    <PackageProjectUrl>https://github.com/Horusiath/Akka.Cluster.Discovery</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/Horusiath/Akka.Cluster.Discovery/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageReleaseNotes>Nuget package</PackageReleaseNotes>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NetStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard1.6' ">1.6.1</NetStandardImplicitPackageVersion>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Akka.Cluster" Version="1.3.2" />
     <PackageReference Include="Consul" Version="0.7.2.3" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Akka.Cluster.Discovery\Akka.Cluster.Discovery.csproj" />
   </ItemGroup>
-
 </Project>

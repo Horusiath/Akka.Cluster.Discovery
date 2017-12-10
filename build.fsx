@@ -41,8 +41,10 @@ let releaseNotes =
 printfn "Assembly version: %s\nNuget version; %s\n" releaseNotes.AssemblyVersion releaseNotes.NugetVersion
 
 Target "AssemblyInfo" (fun _ ->
-    XmlPokeInnerText "./Akka.Cluster.Discovery/Akka.Cluster.Discovery.csproj" "//Project/PropertyGroup/VersionPrefix" releaseNotes.AssemblyVersion    
-    XmlPokeInnerText "./Akka.Cluster.Discovery/Akka.Cluster.Discovery.csproj" "//Project/PropertyGroup/PackageReleaseNotes" (releaseNotes.Notes |> String.concat "\n")
+    XmlPokeInnerText "./src/Akka.Cluster.Discovery/Akka.Cluster.Discovery.csproj" "//Project/PropertyGroup/VersionPrefix" releaseNotes.AssemblyVersion    
+    XmlPokeInnerText "./src/Akka.Cluster.Discovery/Akka.Cluster.Discovery.csproj" "//Project/PropertyGroup/PackageReleaseNotes" (releaseNotes.Notes |> String.concat "\n")
+    XmlPokeInnerText "./src/Akka.Cluster.Discovery.Consul/Akka.Cluster.Discovery.Consul.csproj" "//Project/PropertyGroup/VersionPrefix" releaseNotes.AssemblyVersion    
+    XmlPokeInnerText "./src/Akka.Cluster.Discovery.Consul/Akka.Cluster.Discovery.Consul.csproj" "//Project/PropertyGroup/PackageReleaseNotes" (releaseNotes.Notes |> String.concat "\n")
 )
 
 //--------------------------------------------------------------------------------
@@ -89,7 +91,7 @@ Target "Clean" (fun _ ->
 Target "Build" (fun _ ->
     let additionalArgs = if versionSuffix.Length > 0 then [sprintf "/p:VersionSuffix=%s" versionSuffix] else []  
 
-    let projects = !! "./**/*.csproj"
+    let projects = !! "./**/*.csproj" -- "./samples/**/*.csproj"
 
     let runSingleProject project =
         DotNetCli.Build
@@ -203,6 +205,7 @@ Target "CreateNuget" (fun _ ->
     let projects = !! "./**/*.csproj" 
                    -- "./**/*Tests.csproj" // Don't publish unit tests
                    -- "./**/*Tests*.csproj"
+                   -- "./samples/**/*.csproj" // Don't publish samples
 
     let runSingleProject project =
         DotNetCli.Pack
