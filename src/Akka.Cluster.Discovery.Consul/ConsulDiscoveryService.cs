@@ -91,6 +91,12 @@ namespace Akka.Cluster.Discovery.Consul
             Log.Info("Registered node [{0}] as consul service [{1}] (TTL: {2})", node, id, settings.AliveInterval);
         }
 
+        protected override async Task DeregisterNodeAsync(MemberEntry node)
+        {
+            var id = ServiceId(node.Address);
+            await consul.Agent.ServiceDeregister(id);
+        }
+
         protected override async Task MarkAsAliveAsync(MemberEntry node)
         {
             var addr = node.Address;
