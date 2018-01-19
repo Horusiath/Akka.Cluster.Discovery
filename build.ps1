@@ -32,7 +32,7 @@ Param(
 $FakeVersion = "4.50.0"
 $NBenchVersion = "0.3.4"
 $DotNetChannel = "preview";
-$DotNetVersion = "1.0.4";
+$DotNetVersion = "2.1.4";
 $DotNetInstallerUri = "https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0/scripts/obtain/dotnet-install.ps1";
 $NugetVersion = "3.5.0";
 $NugetUrl = "https://dist.nuget.org/win-x86-commandline/v$NugetVersion/nuget.exe"
@@ -44,6 +44,9 @@ if (!(Test-Path $ToolPath)) {
     Write-Verbose "Creating tools directory..."
     New-Item -Path $ToolPath -Type directory | out-null
 }
+
+$proxy = [System.Net.WebRequest]::GetSystemWebProxy()
+$proxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
 
 ###########################################################################
 # INSTALL .NET CORE CLI
@@ -79,7 +82,9 @@ if($FoundDotNetCliVersion -ne $DotNetVersion) {
     if (!(Test-Path $InstallPath)) {
         mkdir -Force $InstallPath | Out-Null;
     }
-    (New-Object System.Net.WebClient).DownloadFile($DotNetInstallerUri, "$InstallPath\dotnet-install.ps1");
+    $wc = New-Object System.Net.WebClient
+    $wc.proxy = $proxy
+    $wc.DownloadFile($DotNetInstallerUri, "$InstallPath\dotnet-install.ps1");
     & $InstallPath\dotnet-install.ps1 -Channel $DotNetChannel -Version $DotNetVersion -InstallDir $InstallPath;
 
     Remove-PathVariable "$InstallPath"
@@ -96,7 +101,9 @@ if($FoundDotNetCliVersion -ne $DotNetVersion) {
 $NugetPath = Join-Path $ToolPath "nuget.exe"
 if (!(Test-Path $NugetPath)) {
     Write-Host "Downloading NuGet.exe..."
-    (New-Object System.Net.WebClient).DownloadFile($NugetUrl, $NugetPath);
+    $wc = New-Object System.Net.WebClient
+    $wc.proxy = $proxy
+    $wc.DownloadFile($NugetUrl, $NugetPath);
 }
 
 ###########################################################################
