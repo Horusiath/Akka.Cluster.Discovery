@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AssemblyTitle>Akka.Cluster.Discovery</AssemblyTitle>
     <Description>Long running Akka.NET scheduler backed by Akka.Persistence </Description>
@@ -6,10 +6,11 @@
     <PackageTags>akka.net;cluster;service-discovery</PackageTags>
     <Copyright>Copyright © 2017 Akka.NET Team</Copyright>
     <Authors>Bartosz Sypytkowski</Authors>
-    <VersionPrefix>0.0.1</VersionPrefix>
+    <VersionPrefix>0.0.2</VersionPrefix>
     <PackageProjectUrl>https://github.com/Horusiath/Akka.Cluster.Discovery</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/Horusiath/Akka.Cluster.Discovery/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageReleaseNotes>Nuget package</PackageReleaseNotes>
+    <PackageReleaseNotes>Add support for .net full framework v4.5
+Fixed missing dependencies in NuGet packages</PackageReleaseNotes>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NetStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard1.6' ">1.6.1</NetStandardImplicitPackageVersion>
