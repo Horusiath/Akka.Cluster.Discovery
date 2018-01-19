@@ -2,7 +2,7 @@
   <PropertyGroup>
     <AssemblyTitle>Akka.Cluster.Discovery</AssemblyTitle>
     <Description>Long running Akka.NET scheduler backed by Akka.Persistence </Description>
-    <TargetFrameworks>netstandard1.6</TargetFrameworks>
+    <TargetFrameworks>netstandard1.6;net45</TargetFrameworks>
     <PackageTags>akka.net;cluster;service-discovery</PackageTags>
     <Copyright>Copyright © 2017 Akka.NET Team</Copyright>
     <Authors>Bartosz Sypytkowski</Authors>
