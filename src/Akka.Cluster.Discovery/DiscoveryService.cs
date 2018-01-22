@@ -156,7 +156,7 @@ namespace Akka.Cluster.Discovery
                     }
                     else
                     {
-                        Log.Error(cause, "Failed to obtain a distributed lock for actor system [{0}] after {1} retries. Closing.", Context.System.Name, retries);
+                        Log.Error(cause, "Failed to obtain a distributed lock for actor system [{0}] after {1} retries. Closing.", Context.System.Name, settings.JoinRetries);
                         Context.Stop(Self);
                     }
                 }
