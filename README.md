@@ -21,23 +21,22 @@ using Akka.Configuration;
 using Akka.Cluster.Discovery;
 
 var config = ConfigurationFactory.Parse(@"
-	akka {
-		actor.provider = cluster
-		cluster.discovery {
-			provider = akka.cluster.discovery.consul
-			consul {
-				listener-url = ""http://127.0.0.1:8500""
-				class = ""Akka.Cluster.Discovery.Consul.ConsulDiscoveryService, Akka.Cluster.Discovery.Consul""
-			}
-		}
-	}
-");
+  akka {
+    actor.provider = cluster
+    cluster.discovery {
+      provider = akka.cluster.discovery.consul
+      consul {
+        listener-url = ""http://127.0.0.1:8500""
+        class = ""Akka.Cluster.Discovery.Consul.ConsulDiscoveryService, Akka.Cluster.Discovery.Consul""
+      }
+    }
+}");
 
 using (var system = ActorSystem.Create())
 {
 	// this line triggers discovery service initialization
 	// and will join or initialize current actor system to the cluster
-	ClusterDiscovery.Join(system);
+	await ClusterDiscovery.JoinAsync(system);
 
 	Console.ReadLine();
 }

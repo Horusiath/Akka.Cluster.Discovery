@@ -160,6 +160,7 @@ namespace Akka.Cluster.Discovery
                 {
                     if (retries > 0)
                     {
+                        Log.Error(cause, "Failed to obtain a distributed lock for actor system [{0}]. Remaining retries: [{1}]", Context.System.Name, retries);
                         SendJoinSignal();
                     }
                     else
