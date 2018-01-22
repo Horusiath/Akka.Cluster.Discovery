@@ -97,6 +97,14 @@ namespace Akka.Cluster.Discovery
         protected abstract Task RegisterNodeAsync(MemberEntry node);
 
         /// <summary>
+        /// Deregisters (potentially previously registered) <paramref name="node"/>
+        /// from the external service. Used i.e. for graceful shutdown scenarios.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        protected abstract Task DeregisterNodeAsync(MemberEntry node);
+
+        /// <summary>
         /// Used for health checks. Triggers healt check heartbeat, marking current
         /// <paramref name="node"/> as alive.
         /// </summary>
@@ -226,9 +234,21 @@ namespace Akka.Cluster.Discovery
             }
         }
 
+        private void RegisterCoordinatedShutdown()
+        {
+            var coordinatedShutdown = CoordinatedShutdown.Get(Context.System);
+            coordinatedShutdown.AddTask(CoordinatedShutdown.PhaseClusterLeave, "discovery-service-deregister",
+                async () =>
+                {
+                    await DeregisterNodeAsync(Entry);
+                    return Done.Instance;
+                });
+        }
+
         protected override void PreStart()
         {
             SendJoinSignal();
+            RegisterCoordinatedShutdown();
             base.PreStart();
         }
 
