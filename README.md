@@ -61,25 +61,25 @@ akka.cluster.discovery {
 		class = "Akka.Cluster.Discovery.Consul.ConsulDiscoveryService, Akka.Cluster.Discovery.Consul"
 
 		# Time interval in which a `alive` signal will be send by a discovery service
-        # to fit the external service TTL (time to live) expectations. 
+		# to fit the external service TTL (time to live) expectations. 
 		alive-interval = 10s
 
 		# Time to live given for a discovery service to be correctly acknowledged as
-        # alive by external monitoring service. It must be higher than `alive-interval`. 
+		# alive by external monitoring service. It must be higher than `alive-interval`. 
 		alive-timeout = 1m
 
 		# Interval in which current cluster node will reach for a discovery service
-        # to retrieve data about registered node updates. Nodes, that have been detected
-        # as "lost" from service discovery provider, will be downed and removed from the cluster. 
+		# to retrieve data about registered node updates. Nodes, that have been detected
+		# as "lost" from service discovery provider, will be downed and removed from the cluster. 
 		refresh-interval = 1m
 
 		# Maximum number of retries given for a discovery service to register itself
-        # inside 3rd party provider before hitting hard failure. 
+		# inside 3rd party provider before hitting hard failure. 
 		join-retries = 3
 
 		# In case if lock-based discovery service won't be able to acquire the lock,
-        # it will retry to do it again after some time, max up to the number of times 
-        # described by `join-retries` setting value.
+		# it will retry to do it again after some time, max up to the number of times 
+		# described by `join-retries` setting value.
 		lock-retry-interval = 250ms
 
 		# An URL address on with Consul listener service can be found.

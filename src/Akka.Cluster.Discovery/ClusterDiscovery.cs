@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using Akka.Actor;
 using Akka.Configuration;
+using Akka.Util.Internal;
 
 namespace Akka.Cluster.Discovery
 {
@@ -26,15 +29,45 @@ namespace Akka.Cluster.Discovery
         /// <summary>
         /// Starts a cluster using configured third-party discovery serivce to supply initial
         /// list of seed nodes. If no alive nodes where detected, current node will set itself
-        /// as a cluster seed.
+        /// as a cluster seed. This is fire-and-forget method. It means, that while the cluster
+        /// join procedure will be initialized, it won't block until the finish. If this is not
+        /// your case, use <see cref="JoinAsync"/> or <see cref="Cluster.RegisterOnMemberUp"/>.
         /// 
         /// Configuration is provided from `akka.cluster.discovery` config path.
         /// </summary>
         /// <param name="system"></param>
         /// <returns></returns>
-        public static ClusterDiscovery Join(ActorSystem system) => system
-            .WithExtension<ClusterDiscovery, ClusterDiscoveryProvider>();
-        
+        public static ClusterDiscovery Join(ActorSystem system) => system.WithExtension<ClusterDiscovery, ClusterDiscoveryProvider>();
+
+        /// <summary>
+        /// Starts a cluster using configured third-party discovery serivce to supply initial
+        /// list of seed nodes. If no alive nodes where detected, current node will set itself
+        /// as a cluster seed. This method will return a task, which either completes or fails,
+        /// when cluster join procedure finishes.
+        /// 
+        /// Configuration is provided from `akka.cluster.discovery` config path.
+        /// </summary>
+        /// <param name="system"></param>
+        /// <returns></returns>
+        public static Task<ClusterDiscovery> JoinAsync(ActorSystem system, CancellationToken token = default(CancellationToken))
+        {
+            if (token.IsCancellationRequested) return Task.FromCanceled<ClusterDiscovery>(token);
+
+            var promise = new TaskCompletionSource<ClusterDiscovery>();
+            if (token.CanBeCanceled)
+            {
+                token.Register(() => promise.TrySetCanceled(token));
+            }
+
+            var cluster = Cluster.Get(system);
+            var plugin = system.WithExtension<ClusterDiscovery, ClusterDiscoveryProvider>();
+
+            cluster.RegisterOnMemberUp(() => promise.TrySetResult(plugin));
+            cluster.RegisterOnMemberRemoved(() => promise.TrySetException(new ClusterJoinFailedException($"Node has not managed to join the cluster using service discovery")));
+
+            return promise.Task;
+        }
+
         /// <summary>
         /// An actor inheriting from <see cref="Discovery.DiscoveryService"/> that is able to work
         /// with external service.

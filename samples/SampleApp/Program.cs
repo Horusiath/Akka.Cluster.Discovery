@@ -36,11 +36,11 @@ namespace SampleApp
 
             using (var system = ActorSystem.Create("sample", config))
             {
-                ClusterDiscovery.Join(system);
+                await ClusterDiscovery.JoinAsync(system);
 
                 system.ActorOf(Props.Create<SampleActor>());
 
-                Console.WriteLine("Press enter shutdown the current node...");
+                Console.WriteLine("Press enter to shutdown the current node...");
                 Console.ReadLine();
 
                 var cluster = Cluster.Get(system);
