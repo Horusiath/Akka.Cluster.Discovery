@@ -27,6 +27,7 @@ var config = ConfigurationFactory.Parse(@"
 			provider = akka.cluster.discovery.consul
 			consul {
 				listener-url = ""http://127.0.0.1:8500""
+				class = ""Akka.Cluster.Discovery.Consul.ConsulDiscoveryService, Akka.Cluster.Discovery.Consul""
 			}
 		}
 	}
