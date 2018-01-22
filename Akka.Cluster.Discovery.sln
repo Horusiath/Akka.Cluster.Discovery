@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2009
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plugins", "plugins", "{47DDFCDE-4E37-4578-AE1C-A489DC5D9D65}"
 EndProject
@@ -27,6 +27,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Akka.Cluster.Discovery", "s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleApp", "samples\SampleApp\SampleApp.csproj", "{FCEB357F-FDBA-44CC-93DA-22B8CD338FAA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Akka.Cluster.Discovery.Consul.Tests", "test\Akka.Cluster.Discovery.Consul.Tests\Akka.Cluster.Discovery.Consul.Tests.csproj", "{5A97B600-A5F6-41B6-B679-36CC00A02074}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{FCEB357F-FDBA-44CC-93DA-22B8CD338FAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FCEB357F-FDBA-44CC-93DA-22B8CD338FAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FCEB357F-FDBA-44CC-93DA-22B8CD338FAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A97B600-A5F6-41B6-B679-36CC00A02074}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A97B600-A5F6-41B6-B679-36CC00A02074}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A97B600-A5F6-41B6-B679-36CC00A02074}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A97B600-A5F6-41B6-B679-36CC00A02074}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,6 +59,7 @@ Global
 		{7D6FC91C-EDD3-4EFF-A11E-8A0B947618C6} = {47DDFCDE-4E37-4578-AE1C-A489DC5D9D65}
 		{1797672F-B131-417D-A795-C610412F5F7E} = {47DDFCDE-4E37-4578-AE1C-A489DC5D9D65}
 		{FCEB357F-FDBA-44CC-93DA-22B8CD338FAA} = {13582145-1B13-4463-B3D8-A2E5F3901EA2}
+		{5A97B600-A5F6-41B6-B679-36CC00A02074} = {E6467853-363A-4A5E-8FD5-E56A95F5308D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {60AE04FF-5CD9-4124-990A-27696C9C181F}

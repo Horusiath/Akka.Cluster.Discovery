@@ -13,49 +13,10 @@ namespace SampleApp
     {
         static void Main(string[] args)
         {
-            //var cancel = new CancellationTokenSource();
-            //RunAsync(cancel.Token).Wait();
-
-            Run();
+            RunAsync().Wait();
         }
-
-        private static async Task RunAsync(CancellationToken token)
-        {
-            using (var consul = new ConsulClient())
-            {
-                var id = $"mycluster@127.0.0.1:12000";
-                var s = new AgentServiceRegistration
-                {
-                    ID = id,
-                    Name = "mycluster",
-                    Tags = new string[0],
-                    Address = "127.0.0.1",
-                    Port = 12001,
-                    Check = new AgentServiceCheck
-                    {
-                        DeregisterCriticalServiceAfter = TimeSpan.FromMinutes(1),
-                        TTL = TimeSpan.FromSeconds(15)
-                    }
-                };
-                await consul.Agent.ServiceRegister(s);
-
-                var t = new Thread(_ =>
-                    {
-                        while (!token.IsCancellationRequested)
-                        {
-                            consul.Agent.PassTTL("service:" + id, "", token).Wait();
-                            Thread.Sleep(TimeSpan.FromSeconds(5));
-                        }
-                    })
-                    { IsBackground = true };
-                t.Start();
-
-                Console.Write("Started...");
-                Console.ReadLine();
-            }
-        }
-
-        private static void Run()
+        
+        private static async Task RunAsync()
         {
             var config = ConfigurationFactory.ParseString(@"
 	            akka {
@@ -78,6 +39,14 @@ namespace SampleApp
                 ClusterDiscovery.Join(system);
 
                 system.ActorOf(Props.Create<SampleActor>());
+
+                Console.WriteLine("Press enter shutdown the current node...");
+                Console.ReadLine();
+
+                var cluster = Cluster.Get(system);
+                await cluster.LeaveAsync();
+
+                Console.WriteLine("Node terminated. Press enter to exit...");
                 Console.ReadLine();
             }
         }
