@@ -27,6 +27,14 @@ namespace Akka.Cluster.Discovery
             ConfigurationFactory.FromResource<ClusterDiscovery>("Akka.Cluster.Discovery.reference.conf");
 
         /// <summary>
+        /// Returns a <see cref="ClusterDiscovery"/> extension initialized for provided actor system.
+        /// </summary>
+        /// <param name="system"></param>
+        /// <returns></returns>
+        public static ClusterDiscovery Get(ActorSystem system) => 
+            system.WithExtension<ClusterDiscovery, ClusterDiscoveryProvider>();
+
+        /// <summary>
         /// Starts a cluster using configured third-party discovery serivce to supply initial
         /// list of seed nodes. If no alive nodes where detected, current node will set itself
         /// as a cluster seed. This is fire-and-forget method. It means, that while the cluster
@@ -35,9 +43,12 @@ namespace Akka.Cluster.Discovery
         /// 
         /// Configuration is provided from `akka.cluster.discovery` config path.
         /// </summary>
-        /// <param name="system"></param>
         /// <returns></returns>
-        public static ClusterDiscovery Join(ActorSystem system) => system.WithExtension<ClusterDiscovery, ClusterDiscoveryProvider>();
+        public static void Join(ActorSystem system)
+        {
+            var plugin = Get(system);
+            plugin.DiscoveryService.Tell(Discovery.DiscoveryService.Init.Instance);
+        }
 
         /// <summary>
         /// Starts a cluster using configured third-party discovery serivce to supply initial
@@ -47,25 +58,19 @@ namespace Akka.Cluster.Discovery
         /// 
         /// Configuration is provided from `akka.cluster.discovery` config path.
         /// </summary>
-        /// <param name="system"></param>
         /// <returns></returns>
-        public static Task<ClusterDiscovery> JoinAsync(ActorSystem system, CancellationToken token = default(CancellationToken))
+        public static Task JoinAsync(ActorSystem system, CancellationToken token = default(CancellationToken))
         {
-            if (token.IsCancellationRequested) return Task.FromCanceled<ClusterDiscovery>(token);
-
             var promise = new TaskCompletionSource<ClusterDiscovery>();
-            if (token.CanBeCanceled)
-            {
-                token.Register(() => promise.TrySetCanceled(token));
-            }
-
             var cluster = Cluster.Get(system);
-            var plugin = system.WithExtension<ClusterDiscovery, ClusterDiscoveryProvider>();
+            var plugin = Get(system);
 
             cluster.RegisterOnMemberUp(() => promise.TrySetResult(plugin));
             cluster.RegisterOnMemberRemoved(() => promise.TrySetException(new ClusterJoinFailedException($"Node has not managed to join the cluster using service discovery")));
 
-            return promise.Task;
+            plugin.DiscoveryService.Tell(Discovery.DiscoveryService.Init.Instance);
+
+            return promise.Task.WithCancellation(token);
         }
 
         /// <summary>

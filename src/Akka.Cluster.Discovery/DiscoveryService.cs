@@ -37,9 +37,15 @@ namespace Akka.Cluster.Discovery
         /// </summary>
         public interface IMessage { }
 
+        public sealed class Init : IMessage
+        {
+            public static readonly Init Instance = new Init();
+            private Init() { }
+        }
+
         /// <summary>
         /// Signal send to discovery service to trigger to cluster 
-        /// join/initialization procedure.
+        /// initialization procedure and registration in 3rd party service.
         /// </summary>
         public sealed class Join : IMessage
         {
@@ -147,6 +153,7 @@ namespace Akka.Cluster.Discovery
             this.Entry = new MemberEntry(Context.System.Name, Cluster.SelfAddress, Cluster.SelfRoles);
 
             var retries = settings.JoinRetries;
+            Receive<Init>(_ => SendJoinSignal());
             ReceiveAsync<Join>(async _ =>
             {
                 retries--;
@@ -248,7 +255,6 @@ namespace Akka.Cluster.Discovery
 
         protected override void PreStart()
         {
-            SendJoinSignal();
             RegisterCoordinatedShutdown();
             base.PreStart();
         }
