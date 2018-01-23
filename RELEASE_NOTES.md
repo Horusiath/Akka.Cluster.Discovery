@@ -1,3 +1,9 @@
+#### 0.0.3 January 22 2018
+* Updated to Akka v1.3.3
+* Added ClusterDiscovery.JoinAsync
+* Graceful coordinated shutdown
+* Better error logging
+
 #### 0.0.2 January 19 2018
 * Add support for .net full framework v4.5
 * Fixed missing dependencies in NuGet packages

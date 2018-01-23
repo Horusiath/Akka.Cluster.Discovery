@@ -6,11 +6,13 @@
     <PackageTags>akka.net;cluster;service-discovery</PackageTags>
     <Copyright>Copyright © 2017 Akka.NET Team</Copyright>
     <Authors>Bartosz Sypytkowski</Authors>
-    <VersionPrefix>0.0.2</VersionPrefix>
+    <VersionPrefix>0.0.3</VersionPrefix>
     <PackageProjectUrl>https://github.com/Horusiath/Akka.Cluster.Discovery</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/Horusiath/Akka.Cluster.Discovery/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageReleaseNotes>Add support for .net full framework v4.5
-Fixed missing dependencies in NuGet packages</PackageReleaseNotes>
+    <PackageReleaseNotes>Updated to Akka v1.3.3
+Added ClusterDiscovery.JoinAsync
+Graceful coordinated shutdown
+Better error logging</PackageReleaseNotes>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NetStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard1.6' ">1.6.1</NetStandardImplicitPackageVersion>
