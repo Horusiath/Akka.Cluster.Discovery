@@ -61,7 +61,7 @@ akka.cluster.discovery {
 
 		# Time interval in which a `alive` signal will be send by a discovery service
 		# to fit the external service TTL (time to live) expectations. 
-		alive-interval = 10s
+		alive-interval = 5s
 
 		# Time to live given for a discovery service to be correctly acknowledged as
 		# alive by external monitoring service. It must be higher than `alive-interval`. 

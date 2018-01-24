@@ -1,3 +1,8 @@
+#### 0.1.0 January 24 2018
+* Improved Consul health checks relation to TTL
+* Discovery service stop on node removal
+* Configuration values guard checks
+
 #### 0.0.3 January 22 2018
 * Updated to Akka v1.3.3
 * Added ClusterDiscovery.JoinAsync
