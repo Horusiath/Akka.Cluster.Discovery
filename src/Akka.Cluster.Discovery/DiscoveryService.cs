@@ -234,9 +234,9 @@ namespace Akka.Cluster.Discovery
             
             if (!provided.SetEquals(current))
             {
-                if (Log.IsInfoEnabled)
+                if (Log.IsWarningEnabled)
                 {
-                    Log.Info("Detected difference between set of nodes received from the discovery service [{0}] and the one provided by the cluster [{1}]",
+                    Log.Warning("Detected difference between set of nodes received from the discovery service [{0}] and the one provided by the cluster [{1}]. Downing nodes not present in discovery service.",
                         string.Join(", ", provided), string.Join(", ", current));
                 }
 
