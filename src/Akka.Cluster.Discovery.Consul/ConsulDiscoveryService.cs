@@ -79,7 +79,7 @@ namespace Akka.Cluster.Discovery.Consul
                 Port = node.Address.Port.Value,
                 Check = new AgentServiceCheck
                 {
-                    TTL = settings.AliveInterval,
+                    TTL = new TimeSpan(settings.AliveInterval.Ticks * 2),
                     // deregister after 3 activity turns failed
                     DeregisterCriticalServiceAfter = settings.AliveTimeout,
                 }
