@@ -59,6 +59,9 @@ akka.cluster.discovery {
 		# used by the cluster discovery plugin.
 		class = "Akka.Cluster.Discovery.Consul.ConsulDiscoveryService, Akka.Cluster.Discovery.Consul"
 
+		# Define a dispatcher type used by discovery service actor.
+		dispatcher = "akka.actor.default-dispatcher"
+
 		# Time interval in which a `alive` signal will be send by a discovery service
 		# to fit the external service TTL (time to live) expectations. 
 		alive-interval = 5s
@@ -91,7 +94,11 @@ akka.cluster.discovery {
 		token = ""
 
 		# Timeout for a Consul client connection requests.
-		wait-time = <optional time>
+		wait-time = 5s
+
+		# A timeout configured for consul to mark a time to live given for a node
+		# before it will be marked as unhealthy. Must be greater than `alive-interval` and less than `alive-timeout`.
+		service-check-ttl = 15s
 	}
 }
 ```

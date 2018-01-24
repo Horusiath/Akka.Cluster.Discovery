@@ -94,23 +94,24 @@ namespace Akka.Cluster.Discovery
             var config = system.Settings.Config.GetConfig("akka.cluster.discovery");
             var providerConfig = system.Settings.Config.GetConfig(config.GetString("provider"));
             var providerType = Type.GetType(providerConfig.GetString("class"), throwOnError: true);
+            var dispatcher = providerConfig.GetString("dispatcher", Dispatch.Dispatchers.DefaultDispatcherId);
             var name = config.GetString("provider-name");
 
             if (!typeof(ActorBase).IsAssignableFrom(providerType))
                 throw new ArgumentException($"Cluster discovery provider of type [{providerType}] must be an actor.");
 
-            DiscoveryService = CreateDiscoveryService(system, providerType, providerConfig, name);
+            DiscoveryService = CreateDiscoveryService(system, providerType, providerConfig, dispatcher, name);
         }
 
-        private IActorRef CreateDiscoveryService(ExtendedActorSystem system, Type type, Config config, string name)
+        private IActorRef CreateDiscoveryService(ExtendedActorSystem system, Type type, Config config, string dispatcher, string name)
         {
             try
             {
-                return system.SystemActorOf(Props.Create(type, config), name);
+                return system.SystemActorOf(Props.Create(type, config).WithDispatcher(dispatcher), name);
             }
             catch (Exception)
             {
-                return system.SystemActorOf(Props.Create(type), name);
+                return system.SystemActorOf(Props.Create(type).WithDispatcher(dispatcher), name);
             }
         }
     }
