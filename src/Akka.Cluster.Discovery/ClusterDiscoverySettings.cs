@@ -69,6 +69,11 @@ namespace Akka.Cluster.Discovery
             TimeSpan refreshInterval,
             int joinRetries)
         {
+            if (aliveInterval.Ticks * 3 > aliveTimeout.Ticks) throw new ArgumentException("alive-interval should be at least 3 times shorter than alive-timeout", nameof(aliveInterval));
+            if (aliveTimeout == TimeSpan.Zero) throw new ArgumentException("alive-timeout cannot be 0", nameof(aliveTimeout));
+            if (refreshInterval == TimeSpan.Zero) throw new ArgumentException("refresh-interval cannot be 0", nameof(refreshInterval));
+            if (joinRetries == 0) throw new ArgumentException("join-retries must be possitive value", nameof(joinRetries));
+
             AliveInterval = aliveInterval;
             AliveTimeout = aliveTimeout;
             RefreshInterval = refreshInterval;

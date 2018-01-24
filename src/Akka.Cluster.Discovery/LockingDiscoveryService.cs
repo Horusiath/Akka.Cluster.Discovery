@@ -109,12 +109,17 @@ namespace Akka.Cluster.Discovery
             TimeSpan lockRetryInterval) 
             : base(aliveInterval, aliveTimeout, refreshInterval, joinRetries)
         {
+            if (lockRetryInterval == TimeSpan.Zero) throw new ArgumentException("lock-retry-interval cannot be 0", nameof(lockRetryInterval));
+
             LockRetryInterval = lockRetryInterval;
         }
 
         public LockingClusterDiscoverySettings(Config config) : base(config)
         {
-            LockRetryInterval = config.GetTimeSpan("lock-retry-interval", DefaultLockRetryInterval);
+            var lockRetryInterval = config.GetTimeSpan("lock-retry-interval", DefaultLockRetryInterval);
+            if (lockRetryInterval == TimeSpan.Zero) throw new ArgumentException("lock-retry-interval cannot be 0", nameof(lockRetryInterval));
+
+            LockRetryInterval = lockRetryInterval;
         }
     }
 }
