@@ -190,8 +190,9 @@ namespace Akka.Cluster.Discovery
             await RegisterNodeAsync(Entry);
             await MarkAsAliveAsync(Entry);
 
-            aliveTask = Context.System.Scheduler.ScheduleTellRepeatedlyCancelable(settings.AliveInterval, settings.AliveInterval, Self,
-                    new Alive(Entry.Address), ActorRefs.NoSender);
+            // while we set service TTL to AliveInterval, we want to actually ping faster to be sure we won't trigger TTL guard by accident
+            var interval = new TimeSpan(settings.AliveInterval.Ticks / 2);
+            aliveTask = Context.System.Scheduler.ScheduleTellRepeatedlyCancelable(interval, interval, Self, new Alive(Entry.Address), ActorRefs.NoSender);
 
             if (settings.RefreshInterval != TimeSpan.Zero)
             {
