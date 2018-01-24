@@ -1,3 +1,8 @@
+#### 0.2.0 January 25 2018
+* Configurable custom dispatcher for service discovery actor.
+* Reconciliation now takes into account nodes recognized as temporary unhealthy.
+* Configurable service check TTL for Consul.
+
 #### 0.1.0 January 24 2018
 * Improved Consul health checks relation to TTL
 * Discovery service stop on node removal
