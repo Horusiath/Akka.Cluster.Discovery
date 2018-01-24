@@ -177,6 +177,7 @@ namespace Akka.Cluster.Discovery
                     }
                 }
             });
+            Receive<ClusterEvent.MemberRemoved>(removed => StopOnClusterShutdown(removed.Member.Address));
         }
 
         protected virtual async Task<bool> TryJoinAsync()
@@ -208,6 +209,7 @@ namespace Akka.Cluster.Discovery
         {
             ReceiveAsync<Alive>(alive => this.MarkAsAliveAsync(Entry));
             ReceiveAsync<Reconcile>(_ => this.ReconcileClusterStateAsync());
+            Receive<ClusterEvent.MemberRemoved>(removed => StopOnClusterShutdown(removed.Member.Address));
         }
 
         private async Task ReconcileClusterStateAsync()
@@ -253,17 +255,25 @@ namespace Akka.Cluster.Discovery
                 });
         }
 
+        private void StopOnClusterShutdown(Address address)
+        {
+            if (address == Cluster.SelfAddress) 
+                Context.Stop(Self);
+        }
+
         protected override void PreStart()
         {
             RegisterCoordinatedShutdown();
+            Cluster.Subscribe(Self, typeof(ClusterEvent.MemberRemoved));
             base.PreStart();
         }
 
         protected override void PostStop()
         {
+            base.PostStop();
+            Cluster.Unsubscribe(Self);
             aliveTask?.Cancel();
             refreshTask?.Cancel();
-            base.PostStop();
         }
     }
 }
