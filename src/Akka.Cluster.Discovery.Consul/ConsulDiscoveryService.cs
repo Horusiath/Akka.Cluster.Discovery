@@ -52,13 +52,13 @@ namespace Akka.Cluster.Discovery.Consul
             await distributedLock.Release();
         }
 
-        protected override async Task<IEnumerable<Address>> GetAliveNodesAsync()
+        protected override async Task<IEnumerable<Address>> GetNodesAsync(bool onlyAlive)
         {
             var services = await consul.Health.Service(Context.System.Name);
 
             var result =
                 from x in services.Response
-                where Equals(x.Checks[1].Status, HealthStatus.Passing)
+                where !onlyAlive || Equals(x.Checks[1].Status, HealthStatus.Passing)
                 select Address.Parse(protocol + "://" + x.Service.ID);
 
             return result;

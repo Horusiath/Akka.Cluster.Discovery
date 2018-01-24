@@ -92,8 +92,9 @@ namespace Akka.Cluster.Discovery
         /// known as alive. If there are no alive nodes or cluster was not established
         /// yet, it returns an empty collections.
         /// </summary>
+        /// <param name="onlyAlive">Returns only nodes marked as alive.</param>
         /// <returns></returns>
-        protected abstract Task<IEnumerable<Address>> GetAliveNodesAsync();
+        protected abstract Task<IEnumerable<Address>> GetNodesAsync(bool onlyAlive);
 
         /// <summary>
         /// Registers provided <paramref name="node"/> inside of current service.
@@ -182,7 +183,7 @@ namespace Akka.Cluster.Discovery
 
         protected virtual async Task<bool> TryJoinAsync()
         {
-            var nodes = (await GetAliveNodesAsync()).ToArray();
+            var nodes = (await GetNodesAsync(onlyAlive: true)).ToArray();
             if (nodes.Length == 0)
                 Cluster.JoinSeedNodes(new[] {Entry.Address});
             else
@@ -217,7 +218,10 @@ namespace Akka.Cluster.Discovery
             ImmutableHashSet<Address> provided;
             try
             {
-                provided = (await GetAliveNodesAsync()).ToImmutableHashSet();
+                // try to get all nodes during reconciliation. It's acceptable to get unhealthy nodes
+                // if they didn't hit alive-timeout, as provdider service is expected to deregister
+                // nodes past that threshold - they won't appear here
+                provided = (await GetNodesAsync(onlyAlive: false)).ToImmutableHashSet();
             }
             catch (Exception e)
             {
@@ -230,9 +234,9 @@ namespace Akka.Cluster.Discovery
             
             if (!provided.SetEquals(current))
             {
-                if (Log.IsInfoEnabled)
+                if (Log.IsWarningEnabled)
                 {
-                    Log.Info("Detected difference between set of nodes received from the discovery service [{0}] and the one provided by the cluster [{1}]",
+                    Log.Warning("Detected difference between set of nodes received from the discovery service [{0}] and the one provided by the cluster [{1}]. Downing nodes not present in discovery service.",
                         string.Join(", ", provided), string.Join(", ", current));
                 }
 
