@@ -1,10 +1,12 @@
 ﻿#region copyright
+
 // -----------------------------------------------------------------------
 // <copyright file="ConsulDiscoveryService.cs" company="Akka.NET Project">
 //    Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
 //    Copyright (C) 2013-2017 Akka.NET project <https://github.com/akkadotnet/akka.net>
 // </copyright>
 // -----------------------------------------------------------------------
+
 #endregion
 
 using System;
@@ -19,8 +21,26 @@ namespace Akka.Cluster.Discovery.Consul
 {
     public class ConsulDiscoveryService : LockingDiscoveryService
     {
-        private readonly IConsulClient consul;
+        #region internal classes
+
+        /// <summary>
+        /// Message scheduled by <see cref="ConsulDiscoveryService"/> for itself. 
+        /// Used to trigger periodic restart of consul client.
+        /// </summary>
+        public sealed class RestartClient
+        {
+            public static RestartClient Instance { get; } = new RestartClient();
+
+            private RestartClient()
+            {
+            }
+        }
+
+        #endregion
+
         private readonly ConsulSettings settings;
+        private readonly ICancelable restartTask;
+        private IConsulClient consul;
         private IDistributedLock distributedLock;
 
         private readonly string protocol;
@@ -31,7 +51,7 @@ namespace Akka.Cluster.Discovery.Consul
         }
 
         public ConsulDiscoveryService(ConsulSettings settings)
-            : this(new ConsulClient(config => ConfigureClient(config, settings)), settings)
+            : this(CreateConsulClient(settings), settings)
         {
         }
 
@@ -39,6 +59,26 @@ namespace Akka.Cluster.Discovery.Consul
         {
             consul = consulClient;
             this.settings = settings;
+
+            var restartInterval = settings.RestartInterval;
+            if (restartInterval.HasValue && restartInterval.Value != TimeSpan.Zero)
+            {
+                var scheduler = Context.System.Scheduler;
+                restartTask = scheduler.ScheduleTellRepeatedlyCancelable(restartInterval.Value, restartInterval.Value,
+                    Self, RestartClient.Instance, Self);
+            }
+        }
+
+        protected override void Ready()
+        {
+            base.Ready();
+            Receive<RestartClient>(_ =>
+            {
+                Log.Debug("Restarting consul client...");
+
+                consul.Dispose();
+                consul = CreateConsulClient(settings);
+            });
         }
 
         protected override async Task<bool> LockAsync(string key)
@@ -66,7 +106,8 @@ namespace Akka.Cluster.Discovery.Consul
 
         protected override async Task RegisterNodeAsync(MemberEntry node)
         {
-            if (!node.Address.Port.HasValue) throw new ArgumentException($"Cluster address {node.Address} doesn't have a port specified");
+            if (!node.Address.Port.HasValue)
+                throw new ArgumentException($"Cluster address {node.Address} doesn't have a port specified");
 
             var address = node.Address;
             var id = ServiceId(address);
@@ -112,15 +153,16 @@ namespace Akka.Cluster.Discovery.Consul
         protected override void PostStop()
         {
             base.PostStop();
+            restartTask?.Cancel();
             consul.Dispose();
         }
 
-        private static void ConfigureClient(ConsulClientConfiguration clientConfig, ConsulSettings settings)
+        private static ConsulClient CreateConsulClient(ConsulSettings settings) => new ConsulClient(config =>
         {
-            clientConfig.Address = settings.ListenerUrl;
-            clientConfig.Datacenter = settings.Datacenter;
-            clientConfig.Token = settings.Token;
-            clientConfig.WaitTime = settings.WaitTime;
-        }
+            config.Address = settings.ListenerUrl;
+            config.Datacenter = settings.Datacenter;
+            config.Token = settings.Token;
+            config.WaitTime = settings.WaitTime;
+        });
     }
 }
