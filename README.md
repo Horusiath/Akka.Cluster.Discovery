@@ -99,6 +99,10 @@ akka.cluster.discovery {
 		# A timeout configured for consul to mark a time to live given for a node
 		# before it will be marked as unhealthy. Must be greater than `alive-interval` and less than `alive-timeout`.
 		service-check-ttl = 15s
+		
+		# An interval in which consul client will be triggered for periodic restarts. 
+		# If not provided or 0, client will never be restarted. 
+		restart-interval = 5m
 	}
 }
 ```

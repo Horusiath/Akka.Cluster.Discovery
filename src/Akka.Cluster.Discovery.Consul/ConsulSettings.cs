@@ -20,10 +20,11 @@ namespace Akka.Cluster.Discovery.Consul
             Datacenter = config.GetString("datacenter");
             Token = config.GetString("token");
             WaitTime = !config.HasPath("wait-time") ? default(TimeSpan?) : config.GetTimeSpan("wait-time");
+            RestartInterval = !config.HasPath("restart-interval") ? default(TimeSpan?) : config.GetTimeSpan("restart-interval");
 
             var serviceCheckTtl = config.GetTimeSpan("service-check-ttl", new TimeSpan(this.AliveInterval.Ticks * 3));
             if (serviceCheckTtl < AliveInterval || serviceCheckTtl > AliveTimeout) throw new ArgumentException("`akka.cluster.discovery.consul.service-check-ttl` must greater than `akka.cluster.discovery.consul.alive-interval` and less than `akka.cluster.discovery.consul.alive-timeout`");
-
+            
             ServiceCheckTtl = serviceCheckTtl;
         }
 
@@ -34,6 +35,7 @@ namespace Akka.Cluster.Discovery.Consul
             Token = null;
             WaitTime = null;
             ServiceCheckTtl = new TimeSpan(this.AliveInterval.Ticks * 3);
+            RestartInterval = null;
         }
 
         public ConsulSettings(Uri listenerUrl,
@@ -45,7 +47,8 @@ namespace Akka.Cluster.Discovery.Consul
             TimeSpan refreshInterval,
             int joinRetries, 
             TimeSpan lockRetryInterval,
-            TimeSpan serviceCheckTtl) 
+            TimeSpan serviceCheckTtl,
+            TimeSpan? restartInterval) 
             : base(aliveInterval, aliveTimeout, refreshInterval, joinRetries, lockRetryInterval)
         {
             if (serviceCheckTtl < AliveInterval || serviceCheckTtl > AliveTimeout) throw new ArgumentException("serviceCheckTtl must greater than aliveInterval and less than aliveTimeout", nameof(serviceCheckTtl));
@@ -55,6 +58,7 @@ namespace Akka.Cluster.Discovery.Consul
             Token = token;
             WaitTime = waitTime;
             ServiceCheckTtl = serviceCheckTtl;
+            RestartInterval = restartInterval;
         }
 
         /// <summary>
@@ -82,5 +86,11 @@ namespace Akka.Cluster.Discovery.Consul
         /// marked as unhealthy. Must be greater than <see cref="AliveInterval"/> and less than <see cref="AliveTimeout"/>.
         /// </summary>
         public TimeSpan ServiceCheckTtl { get; }
+        
+        /// <summary>
+        /// An interval in which consul client will be triggered for periodic restarts.
+        /// If not provided or 0, client will never be restarted. Default value: null. 
+        /// </summary>
+        public TimeSpan? RestartInterval { get; }
     }
 }
