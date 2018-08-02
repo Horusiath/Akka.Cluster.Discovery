@@ -49,8 +49,8 @@ using (var system = ActorSystem.Create())
 akka.cluster.discovery {
 	
 	# Path to a provider configuration used in for cluster discovery. Example:
-	# 1. akka.cluster.disovery.consul
-	provider = "akka.cluster.disovery.consul"
+	# 1. akka.cluster.discovery.consul
+	provider = "akka.cluster.discovery.consul"
 
 	# A configuration used by consult-based discovery service
 	consul {
