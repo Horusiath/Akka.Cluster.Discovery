@@ -168,12 +168,12 @@ namespace Akka.Cluster.Discovery
                 {
                     if (retries > 0)
                     {
-                        Log.Error(cause, "Failed to obtain a distributed lock for actor system [{0}]. Remaining retries: [{1}]", Context.System.Name, retries);
+                        Log.Error(cause, "Failed to join actor system [{0}] to the cluster. Remaining retries: [{1}]", Context.System.Name, retries);
                         SendJoinSignal();
                     }
                     else
                     {
-                        Log.Error(cause, "Failed to obtain a distributed lock for actor system [{0}] after {1} retries. Closing.", Context.System.Name, settings.JoinRetries);
+                        Log.Error(cause, "Failed to join actor system [{0}] to the cluster after {1} retries. Closing.", Context.System.Name, settings.JoinRetries);
                         Context.Stop(Self);
                     }
                 }

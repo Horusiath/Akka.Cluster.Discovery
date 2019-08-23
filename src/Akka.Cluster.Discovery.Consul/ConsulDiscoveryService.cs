@@ -98,7 +98,7 @@ namespace Akka.Cluster.Discovery.Consul
 
             var result =
                 from x in services.Response
-                where !onlyAlive || Equals(x.Checks[1].Status, HealthStatus.Passing)
+                where !onlyAlive || x.Checks.All(check => Equals(check.Status, HealthStatus.Passing))
                 select Address.Parse(protocol + "://" + x.Service.ID);
 
             return result;
