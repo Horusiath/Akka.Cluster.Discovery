@@ -6,18 +6,17 @@
     <PackageTags>akka.net;cluster;service-discovery;consul</PackageTags>
     <Copyright>Copyright © 2017 Akka.NET Team</Copyright>
     <Authors>Bartosz Sypytkowski</Authors>
-    <VersionPrefix>0.2.0</VersionPrefix>
+    <VersionPrefix>0.3.0</VersionPrefix>
     <PackageProjectUrl>https://github.com/Horusiath/Akka.Cluster.Discovery</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/Horusiath/Akka.Cluster.Discovery/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageReleaseNotes>Configurable custom dispatcher for service discovery actor.
-Reconciliation now takes into account nodes recognized as temporary unhealthy.
-Configurable service check TTL for Consul.</PackageReleaseNotes>
+    <PackageReleaseNotes>Updated dependencies.</PackageReleaseNotes>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NetStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard1.6' ">1.6.1</NetStandardImplicitPackageVersion>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <IsPublishable>true</IsPublishable>
   </PropertyGroup>
 
   <ItemGroup>
