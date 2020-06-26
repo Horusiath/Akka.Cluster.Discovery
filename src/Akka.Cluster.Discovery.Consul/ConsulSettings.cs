@@ -83,7 +83,8 @@ namespace Akka.Cluster.Discovery.Consul
 
         /// <summary>
         /// A timeout configured for consul to mark a time to live given for a node before it will be 
-        /// marked as unhealthy. Must be greater than <see cref="AliveInterval"/> and less than <see cref="AliveTimeout"/>.
+        /// marked as unhealthy. Must be greater than <see cref="ClusterDiscoverySettings.AliveInterval"/>
+        /// and less than <see cref="ClusterDiscoverySettings.AliveTimeout"/>.
         /// </summary>
         public TimeSpan ServiceCheckTtl { get; }
         

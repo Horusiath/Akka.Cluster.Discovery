@@ -61,6 +61,7 @@ namespace Akka.Cluster.Discovery
         /// <returns></returns>
         public static Task JoinAsync(ActorSystem system, CancellationToken token = default(CancellationToken))
         {
+            
             var promise = new TaskCompletionSource<ClusterDiscovery>();
             var cluster = Cluster.Get(system);
             var plugin = Get(system);
@@ -70,7 +71,23 @@ namespace Akka.Cluster.Discovery
 
             plugin.DiscoveryService.Tell(Discovery.DiscoveryService.Init.Instance);
 
-            return promise.Task.WithCancellation(token);
+            if (token.CanBeCanceled)
+            {
+                return Cancellable(promise, token);
+            }
+            else
+            {
+                return promise.Task;                
+            }
+        }
+        
+        private static Task Cancellable(TaskCompletionSource<ClusterDiscovery> promise, CancellationToken token)
+        {
+            var registration = token.Register(() => promise.TrySetCanceled(token));
+            return promise.Task.ContinueWith(task =>
+            {
+                if (!task.IsCanceled) registration.Dispose();
+            });
         }
 
         /// <summary>
