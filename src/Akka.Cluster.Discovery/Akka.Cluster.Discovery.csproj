@@ -29,7 +29,7 @@
     <EmbeddedResource Include="reference.conf" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Akka.Cluster" Version="1.4.8" />
+    <PackageReference Include="Akka.Cluster" Version="1.5.52" />
     <PackageReference Include="System.Reflection.TypeExtensions" Version="4.7.0" />
   </ItemGroup>
 </Project>
